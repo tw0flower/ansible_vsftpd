@@ -1,0 +1,69 @@
+---
+# tasks file for vsftpd
+- name: Include OS-specific variables.
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
+
+- name: Include distribution and version-specific vars.
+  ansible.builtin.include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+      skip: true
+
+- name: Install vsftpd.
+  ansible.builtin.include_tasks: "install-{{ ansible_os_family }}.yml"
+
+- name: Ensure vsftpd is enabled.
+  ansible.builtin.service:
+    name: vsftpd
+    enabled: true
+  notify: restart vsftpd
+
+- name: Install vsftpd configuration
+  ansible.builtin.template:
+    src: vsftpd.conf.j2
+    dest: "{{ __vsftpd_config_location }}"
+    owner: root
+    group: root
+    mode: 0600
+  notify: restart vsftpd
+
+- name: Install vsftpd deny user list
+  ansible.builtin.template:
+    src: vsftpd.conf.j2
+    dest: "{{ __vsftpd_user_list_file }}"
+    owner: root
+    group: root
+    mode: 0600
+  notify: restart vsftpd
+
+- name: Install vsftpd banned_email list
+  ansible.builtin.template:
+    src: vsftpd.conf.j2
+    dest: "{{ __vsftpd_banned_email_file }}"
+    owner: root
+    group: root
+    mode: 0600
+  notify: restart vsftpd
+
+- name: Create vsftpd private key
+  community.crypto.openssl_privatekey:
+    path: "{{ __vsftpd_private_key_location }}"
+  notify: restart vsftpd
+
+- name: Create certificate signing request (CSR) for self-signed certificate
+  community.crypto.openssl_csr_pipe:
+    privatekey_path: "{{ __vsftpd_private_key_location }}"
+    common_name: "{{ vsftpd_cert_cn }}"
+    organization_name: "{{ vsftpd_cert_org }}"
+  register: csr
+
+
+- name: Create SSL certificates
+  community.crypto.x509_certificate:
+    path: /etc/ssl/certs/vsftpd.pem
+    privatekey_path: /etc/ssl/certs/vsftpd.key
+    csr_content: "{{ csr.csr }}"
+    provider: selfsigned
+  when: vsftpd_ssl_enable and (vsftpd_local_cert_path is not defined or vsftpd_local_private_key_path is not defined)
+  notify: restart vsftpd

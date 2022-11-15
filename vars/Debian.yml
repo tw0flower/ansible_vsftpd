@@ -1,0 +1,13 @@
+---
+__vsftpd_packages:
+  - vsftpd
+
+__vsftpd_config_location: /etc/vsftpd.conf
+
+__vsftpd_pam_service_name: vsftpd
+__vsftpd_user_list_file: /etc/ftpusers
+__vsftpd_chroot_list_file: /etc/vsftpd.chroot_list
+__vsftpd_banned_email_file: /etc/vsftpd.banned_email
+__vsftpd_secure_chroot_dir: /var/run/vsftpd/empty/
+__vsftpd_cert_location: /etc/ssl/certs/vsftpd.pem
+__vsftpd_private_key_location: /etc/ssl/certs/vsftpd.key

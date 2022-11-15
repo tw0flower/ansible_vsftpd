@@ -1,0 +1,36 @@
+---
+# defaults file for vsftpd
+vsftpd_anonymous_enable: false
+vsftpd_local_enable: true
+vsftpd_write_enable: true
+vsftpd_local_umask: '022'
+vsftpd_anon_upload_enable: false
+vsftpd_mkdir_write_enable: false
+vsftpd_dirmessage_enable: true
+vsftpd_xferlog_enable: true
+vsftpd_connect_from_port_20: true
+vsftpd_chown_uploads: false
+vsftpd_chown_username: whoever
+vsftpd_xferlog_file: /var/log/xferlog
+vsftpd_xferlog_std_format: true
+vsftpd_idle_session_timeout: 600
+vsftpd_data_connection_timeout: 120
+vsftpd_nopriv_user: ftp
+vsftpd_async_abort_enable: false
+vsftpd_ascii_upload_enable: false
+vsftpd_ascii_download_enable: false
+vsftpd_ftpd_banner: Welcome to blah FTP service.
+vsftpd_deny_email_enable: false
+vsftpd_chroot_local_user: true
+vsftpd_ls_recurse_enable: false
+vsftpd_listen_ipv6: false
+vsftpd_pam_service_name: vsftpd
+
+vsftpd_banned_emails: []
+vsftpd_chroot_list: []
+vsftpd_userlist: [test]
+
+vsftpd_ssl_enable: true
+vsftpd_ssl_ciphers: ['ECDHE-RSA-AES256-GCM-SHA38', 'ECDHE-RSA-AES128-GCM-SHA256', 'ECDHE-RSA-AES256-SHA384', 'ECDHE-RSA-AES128-SHA256']
+vsftpd_cert_cn: vsftpd
+vsftpd_cert_org: vsftpd

@@ -1,0 +1,41 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: podman
+platforms:
+  - name: rockylinux8
+    image: rockylinux:8
+    command: /sbin/init
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    pre_build_image: true
+    published_ports:
+      - 127.0.0.1:2121:21
+  - name: rockylinux9
+    image: rockylinux:9
+    command: /sbin/init
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    pre_build_image: true
+  - name: debian10
+    image: geerlingguy/docker-debian10-ansible
+    command: /sbin/init
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    pre_build_image: true
+  - name: debian11
+    image: geerlingguy/docker-debian11-ansible
+    command: /sbin/init
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    pre_build_image: true
+provisioner:
+  name: ansible
+verifier:
+  name: ansible
+

@@ -1,0 +1,6 @@
+---
+- name: Install the vsftpd package
+  ansible.builtin.dnf:
+    name: "{{ __vsftpd_packages }}"
+    state: present
+  notify: restart vsftpd

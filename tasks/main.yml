@@ -30,7 +30,7 @@
 
 - name: Install vsftpd deny user list
   ansible.builtin.template:
-    src: vsftpd.conf.j2
+    src: user_list.j2
     dest: "{{ __vsftpd_user_list_file }}"
     owner: root
     group: root
@@ -39,7 +39,7 @@
 
 - name: Install vsftpd banned_email list
   ansible.builtin.template:
-    src: vsftpd.conf.j2
+    src: banned_emails.j2
     dest: "{{ __vsftpd_banned_email_file }}"
     owner: root
     group: root

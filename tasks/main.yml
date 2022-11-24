@@ -50,6 +50,7 @@
   community.crypto.openssl_privatekey:
     path: "{{ __vsftpd_private_key_location }}"
   notify: restart vsftpd
+  when: vsftpd_ssl_enable and (vsftpd_local_cert_path is not defined or vsftpd_local_private_key_path is not defined)
 
 - name: Create certificate signing request (CSR) for self-signed certificate
   community.crypto.openssl_csr_pipe:
@@ -57,13 +58,31 @@
     common_name: "{{ vsftpd_cert_cn }}"
     organization_name: "{{ vsftpd_cert_org }}"
   register: csr
-
+  when: vsftpd_ssl_enable and (vsftpd_local_cert_path is not defined or vsftpd_local_private_key_path is not defined)
 
 - name: Create SSL certificates
   community.crypto.x509_certificate:
-    path: /etc/ssl/certs/vsftpd.pem
-    privatekey_path: /etc/ssl/certs/vsftpd.key
+    path: "{{ __vsftpd_cert_location }}"
+    privatekey_path: "{{ __vsftpd_private_key_location }}"
     csr_content: "{{ csr.csr }}"
     provider: selfsigned
   when: vsftpd_ssl_enable and (vsftpd_local_cert_path is not defined or vsftpd_local_private_key_path is not defined)
   notify: restart vsftpd
+
+- name: Copy SSL certificate
+  ansible.builtin.copy:
+    src: "{{ vsftpd_local_cert_path }}"
+    dest: "{{ __vsftpd_cert_location }}"
+    owner: root
+    group: vsftpd
+    mode: 0640
+  when: vsftpd_ssl_enable and vsftpd_local_cert_path is defined and vsftpd_local_private_key_path is defined
+
+- name: Copy vsftpd SSL key
+  ansible.builtin.copy:
+    src: "{{ vsftpd_local_cert_path }}"
+    dest: "{{ __vsftpd_private_key_location }}"
+    owner: root
+    group: vsftpd
+    mode: 0640
+  when: vsftpd_ssl_enable and vsftpd_local_cert_path is not defined and vsftpd_local_private_key_path is not defined

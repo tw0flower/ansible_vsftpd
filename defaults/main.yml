@@ -34,3 +34,7 @@ vsftpd_ssl_enable: true
 vsftpd_ssl_ciphers: ['ECDHE-RSA-AES256-GCM-SHA38', 'ECDHE-RSA-AES128-GCM-SHA256', 'ECDHE-RSA-AES256-SHA384', 'ECDHE-RSA-AES128-SHA256']
 vsftpd_cert_cn: vsftpd
 vsftpd_cert_org: vsftpd
+
+vsftpd_pasv_enable: true
+vsftpd_pasv_max_port: 10100
+vsftpd_pasv_min_port: 10090
